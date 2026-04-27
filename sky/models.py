@@ -249,3 +249,19 @@ class AuditLog(models.Model):
 
     def __str__(self):
         return f"{self.entity_name} - {self.action} at {self.timestamp}"
+
+# ─────────────────────────────────────────
+#  TEAM CHANNEL
+# ─────────────────────────────────────────
+class TeamChannel(models.Model):
+    team = models.ForeignKey(
+        Team,
+        on_delete=models.CASCADE,
+        related_name='channels'
+    )
+    channel_name = models.CharField(max_length=100)
+    platform = models.CharField(max_length=50)
+    channel_link = models.URLField(blank=True)
+
+    def __str__(self):
+        return f"{self.team.team_name} - {self.channel_name}"
