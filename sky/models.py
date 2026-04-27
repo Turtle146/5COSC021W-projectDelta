@@ -135,7 +135,7 @@ class Dependency(models.Model):
     class Meta:
         constraints = [
             models.CheckConstraint(
-                check=~models.Q(source_team=models.F('target_team')),
+                condition=~models.Q(source_team=models.F('target_team')),
                 name='no_self_dependency'
             )
         ]
