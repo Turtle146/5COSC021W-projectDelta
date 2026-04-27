@@ -1,0 +1,46 @@
+{% extends "sky/base.html" %}
+{% block nav_dept %}active{% endblock %}
+{% block title %}Departments — Sky Engineering{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <h1>Departments <span>//</span></h1>
+    <p>// {{ departments.count }} departments across the organisation</p>
+</div>
+
+<form method="get" class="search-bar">
+    <input type="text" name="q" value="{{ query }}" class="search-input" placeholder="Search departments...">
+    <button type="submit" class="search-btn">Search</button>
+    {% if query %}
+    <a href="/departments/" class="btn btn-outline">Clear</a>
+    {% endif %}
+</form>
+
+<div class="cards-grid">
+    {% for dept in departments %}
+    <div class="card">
+        <div class="card-tag">&#9632; Department</div>
+        <div class="card-title">{{ dept.department_name }}</div>
+        <div class="card-desc">{{ dept.department_description|truncatechars:100 }}</div>
+        <div class="card-meta">
+            <div class="card-meta-row">
+                <span class="card-meta-label">Head —</span>
+                <span class="card-meta-value">{{ dept.department_head.get_full_name|default:"Not assigned" }}</span>
+            </div>
+            <div class="card-meta-row">
+                <span class="card-meta-label">Teams —</span>
+                <span class="card-meta-value">{{ dept.teams.count }}</span>
+            </div>
+        </div>
+        <div class="card-footer">
+            <span class="badge badge-green">Active</span>
+            <a href="/departments/{{ dept.id }}/" class="btn btn-primary">View &rarr;</a>
+        </div>
+    </div>
+    {% empty %}
+    <div class="empty" style="grid-column: 1 / -1;">
+        No departments found{% if query %} for "{{ query }}"{% endif %}.
+    </div>
+    {% endfor %}
+</div>
+{% endblock %}

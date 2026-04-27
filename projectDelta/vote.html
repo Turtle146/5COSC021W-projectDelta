@@ -1,0 +1,33 @@
+vote.html
+
+<h2>Voting for Session {{ session.id }}</h2>
+
+<form method="POST">
+  {% csrf_token %} {% for card in cards %}
+  <div style="margin-bottom: 20px">
+    <h4>{{ card.name }}</h4>
+
+    <!-- Traffic Light Voting -->
+    <label>
+      <input type="radio" name="vote_{{ card.id }}" value="green" /> Green
+    </label>
+    <label>
+      <input type="radio" name="vote_{{ card.id }}" value="amber" /> Amber
+    </label>
+    <label>
+      <input type="radio" name="vote_{{ card.id }}" value="red" /> Red
+    </label>
+
+    <br />
+
+    <!-- Progress -->
+    <select name="progress_{{ card.id }}">
+      <option value="better">Better</option>
+      <option value="same">Same</option>
+      <option value="worse">Worse</option>
+    </select>
+  </div>
+  {% endfor %}
+
+  <button type="submit">Submit Votes</button>
+</form>
