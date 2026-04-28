@@ -1,0 +1,130 @@
+{% extends "base.html" %}
+
+{% block title %}Student 5 Reports | Sky Engineering Portal{% endblock %}
+
+{% block content %}
+<section class="panel">
+    <div class="panel-header">
+        <div>
+            <h2>Student 5 Report Centre</h2>
+            <p>Built from the coursework brief requirement for the <strong>Reports</strong> menu item with PDF/Excel exports, total team counts, summary reporting, and teams-without-managers analysis.</p>
+        </div>
+        <div class="btn-row">
+            <a class="btn" href="{% url 'reports:export_excel' %}">Export Excel</a>
+            <a class="btn secondary" href="{% url 'reports:export_pdf' %}">Export PDF</a>
+        </div>
+    </div>
+</section>
+
+<section class="card-grid">
+    <article class="card">
+        <div class="eyebrow">Total Teams</div>
+        <div class="value">{{ stats.total_teams }}</div>
+    </article>
+    <article class="card">
+        <div class="eyebrow">Departments</div>
+        <div class="value">{{ stats.total_departments }}</div>
+    </article>
+    <article class="card">
+        <div class="eyebrow">Dependencies</div>
+        <div class="value">{{ stats.total_dependencies }}</div>
+    </article>
+    <article class="card">
+        <div class="eyebrow">Teams Without Managers</div>
+        <div class="value">{{ stats.teams_without_managers }}</div>
+    </article>
+</section>
+
+<section class="panel">
+    <div class="panel-header">
+        <div>
+            <h2>Summary by Department</h2>
+            <p>This section supports the brief’s “summary” reporting requirement and gives a quick quality snapshot of the imported registry.</p>
+        </div>
+    </div>
+    <table>
+        <thead>
+            <tr>
+                <th>Department</th>
+                <th>Department Head</th>
+                <th>Teams</th>
+                <th>Managers Assigned</th>
+                <th>Repositories</th>
+                <th>Contact Channels</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for row in summary_rows %}
+            <tr>
+                <td>{{ row.department.name }}</td>
+                <td>{{ row.department.head_name|default:"Unassigned" }}</td>
+                <td>{{ row.team_count }}</td>
+                <td>{{ row.manager_count }}</td>
+                <td>{{ row.repository_count }}</td>
+                <td>{{ row.contact_channel_count }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</section>
+
+<section class="panel">
+    <div class="panel-header">
+        <div>
+            <h2>Number of Teams by Department</h2>
+            <p>This report satisfies the “No of teams” requirement while keeping the breakdown easy for tutors and stakeholders to inspect.</p>
+        </div>
+    </div>
+    <table>
+        <thead>
+            <tr>
+                <th>Department</th>
+                <th>Department Head</th>
+                <th>Team Count</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for department in team_count_by_department %}
+            <tr>
+                <td>{{ department.name }}</td>
+                <td>{{ department.head_name|default:"Unassigned" }}</td>
+                <td>{{ department.team_count }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</section>
+
+<section class="panel">
+    <div class="panel-header">
+        <div>
+            <h2>Teams Without Managers</h2>
+            <p>This report highlights missing team leadership assignments so the registry can be cleaned up quickly.</p>
+        </div>
+    </div>
+    {% if teams_without_managers %}
+    <table>
+        <thead>
+            <tr>
+                <th>Department</th>
+                <th>Team</th>
+                <th>Project</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for team in teams_without_managers %}
+            <tr>
+                <td>{{ team.department.name }}</td>
+                <td>{{ team.name }}</td>
+                <td>{{ team.jira_project_name|default:"-" }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    {% else %}
+    <div class="empty-state">
+        No unmanaged teams were found in the supplied Sky team registry. The report still stays available so future missing-manager records are surfaced immediately.
+    </div>
+    {% endif %}
+</section>
+{% endblock %}
